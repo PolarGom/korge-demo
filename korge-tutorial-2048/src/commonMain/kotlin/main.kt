@@ -3,8 +3,11 @@ import com.soywiz.korge.tween.*
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
+import com.soywiz.korim.font.readBitmapFont
 import com.soywiz.korim.format.*
+import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korio.file.std.*
+import com.soywiz.korma.geom.Rectangle
 import com.soywiz.korma.geom.vector.rect
 import com.soywiz.korma.geom.vector.roundRect
 
@@ -43,5 +46,52 @@ suspend fun main() = Korge(width = 480, height = 640, title = "2048", bgcolor = 
 	val bgScore = roundRect(cellSize * 1.5, cellSize * 0.8, 5.0, fill = Colors["#bbae9e"]) {
 		alignRightToLeftOf(bgBest, 24)
 		alignTopToTopOf(bgBest)
+	}
+
+	val font = resourcesVfs["clear_sans.fnt"].readBitmapFont()
+	text("2048", cellSize * 0.5, Colors.WHITE, font).centerOn(bgLogo)
+
+	text("BEST", 30.0, RGBA(239, 226, 210), font) {
+		centerXOn(bgBest)
+		alignTopToTopOf(bgBest, 5.0)
+	}
+	text("0", cellSize * 0.5, Colors.WHITE, font) {
+		setTextBounds(Rectangle(0.0, 0.0, bgBest.width, cellSize - 24.0))
+		alignment = TextAlignment.MIDDLE_CENTER
+		alignTopToTopOf(bgBest, 12.0)
+		centerXOn(bgBest)
+	}
+
+	text("SCORE", 30.0, RGBA(239, 226, 210), font) {
+		centerXOn(bgScore)
+		alignTopToTopOf(bgScore, 5.0)
+	}
+	text("0", cellSize * 0.5, Colors.WHITE, font) {
+		setTextBounds(Rectangle(0.0, 0.0, bgScore.width, cellSize - 24.0))
+		alignment = TextAlignment.MIDDLE_CENTER
+		alignTopToTopOf(bgScore, 12.0)
+		centerXOn(bgScore)
+	}
+
+	val restartImg = resourcesVfs["restart.png"].readBitmap()
+	val undoImg = resourcesVfs["undo.png"].readBitmap()
+	val btnSize = cellSize * 0.3
+	val restartBlock = container {
+		val background = roundRect(btnSize, btnSize, 5.0, fill = RGBA(185, 174, 160))
+		image(restartImg) {
+			size(btnSize * 0.8, btnSize * 0.8)
+			centerOn(background)
+		}
+		alignTopToBottomOf(bgBest, 5)
+		alignRightToRightOf(bgField)
+	}
+	val undoBlock = container {
+		val background = roundRect(btnSize, btnSize, 5.0, fill = RGBA(185, 174, 160))
+		image(undoImg) {
+			size(btnSize * 0.6, btnSize * 0.6)
+			centerOn(background)
+		}
+		alignTopToTopOf(restartBlock)
+		alignRightToLeftOf(restartBlock, 5.0)
 	}
 }
