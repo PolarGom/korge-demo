@@ -1,6 +1,6 @@
 import com.soywiz.korim.color.RGBA
 
-enum class Number(val value: Int, val color: RGBA) {
+enum class ENumber(val value: Int, val color: RGBA) {
     ZERO(2, RGBA(240, 228, 218)),
     ONE(4, RGBA(236, 224, 201)),
     TWO(8, RGBA(255, 178, 120)),

@@ -1,23 +1,32 @@
+import com.soywiz.korev.*
 import com.soywiz.korge.*
-import com.soywiz.korge.tween.*
+import com.soywiz.korge.html.*
+import com.soywiz.korge.input.*
 import com.soywiz.korge.view.*
-import com.soywiz.korim.color.Colors
-import com.soywiz.korim.color.RGBA
-import com.soywiz.korim.font.BitmapFont
-import com.soywiz.korim.font.readBitmapFont
+import com.soywiz.korim.color.*
+import com.soywiz.korim.font.*
 import com.soywiz.korim.format.*
 import com.soywiz.korim.text.TextAlignment
+import com.soywiz.korio.dynamic.KDynamic.Companion.keys
 import com.soywiz.korio.file.std.*
-import com.soywiz.korma.geom.Rectangle
-import com.soywiz.korma.geom.vector.rect
-import com.soywiz.korma.geom.vector.roundRect
-import kotlin.properties.Delegates
+import com.soywiz.korma.geom.*
+import com.soywiz.korma.geom.vector.*
+import com.soywiz.korui.layout.Position
+import kotlin.Number
+import kotlin.properties.*
+import kotlin.random.*
 
 var cellSize: Double = 0.0
 var fieldSize: Double = 0.0
 var leftIndent: Double = 0.0
 var topIndent: Double = 0.0
 var font: BitmapFont by Delegates.notNull()
+val blocks = mutableMapOf<Int, Block>()
+var map = PositionMap()
+var freeId = 0
+
+fun columnX(number: Int) = leftIndent + 10 + (cellSize + 10) * number
+fun rowY(number: Int) = topIndent + 10 + (cellSize + 10) * number
 
 suspend fun main() = Korge(width = 480, height = 640, title = "2048", bgcolor = RGBA(253, 247, 240)) {
 
@@ -103,4 +112,49 @@ suspend fun main() = Korge(width = 480, height = 640, title = "2048", bgcolor = 
 		alignTopToTopOf(restartBlock)
 		alignRightToLeftOf(restartBlock, 5.0)
 	}
+
+	generateBlock()
+
+	keys {
+		down {
+			when(it.key) {
+				Key.LEFT -> moveBlocksTo(Direction.LEFT)
+				Key.RIGHT  -> moveBlocksTo(Direction.RIGHT)
+				Key.UP  -> moveBlocksTo(Direction.TOP)
+				Key.DOWN  -> moveBlocksTo(Direction.BOTTOM)
+				else -> Unit
+			}
+		}
+	}
+
+	onSwipe(20.0) {
+		when (it.direction) {
+			SwipeDirection.LEFT -> moveBlocksTo(Direction.LEFT)
+			SwipeDirection.RIGHT -> moveBlocksTo(Direction.RIGHT)
+			SwipeDirection.TOP -> moveBlocksTo(Direction.TOP)
+			SwipeDirection.BOTTOM -> moveBlocksTo(Direction.BOTTOM)
+		}
+	}
+}
+
+fun Stage.moveBlocksTo(direction: Direction) {
+	println(direction)
+	//TODO, implement this and calculate changes
+}
+
+fun Container.generateBlock() {
+	val position = map.getRandomFreePosition() ?: return
+	val number = if (Random.nextDouble() < 0.9) ENumber.ZERO else ENumber.ONE
+	val newId = createNewBlock(number, position)
+	map[position.x, position.y] = newId
+}
+
+fun Container.createNewBlock(number: ENumber, position: CustomPosition): Int {
+	val id = freeId++
+	createNewBlockWithId(id, number, position)
+	return id
+}
+
+fun Container.createNewBlockWithId(id: Int, number: ENumber, position: CustomPosition) {
+	blocks[id] = block(number).position(columnX(position.x), rowY(position.y))
 }

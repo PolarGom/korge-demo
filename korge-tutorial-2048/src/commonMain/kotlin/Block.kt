@@ -1,11 +1,13 @@
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 
-class Block(val number: Number): Container() {
+fun Container.block(number: ENumber) = Block(number).addTo(this)
+
+class Block(val number: ENumber): Container() {
     init {
         roundRect(cellSize, cellSize, 5.0, fill = number.color)
         val textColor = when(number) {
-            Number.ZERO, Number.ONE -> Colors.BLACK
+            ENumber.ZERO, ENumber.ONE -> Colors.BLACK
             else -> Colors.WHITE
         }
         text(number.value.toString(), textSizeFor(number), textColor, font) {
@@ -13,14 +15,12 @@ class Block(val number: Number): Container() {
         }
     }
 
-    private fun textSizeFor(number: Number) = when (number) {
-        Number.ZERO, Number.ONE, Number.TWO, Number.THREE, Number.FOUR, Number.FIVE -> cellSize / 2
-        Number.SIX, Number.SEVEN, Number.EIGHT -> cellSize * 4 / 9
-        Number.NINE, Number.TEN, Number.ELEVEN, Number.TWELVE -> cellSize * 2 / 5
-        Number.THIRTEEN, Number.FOURTEEN, Number.FIFTEEN -> cellSize * 7 / 20
-        Number.SIXTEEN -> cellSize * 3 / 10
+    private fun textSizeFor(number: ENumber) = when (number) {
+        ENumber.ZERO, ENumber.ONE, ENumber.TWO, ENumber.THREE, ENumber.FOUR, ENumber.FIVE -> cellSize / 2
+        ENumber.SIX, ENumber.SEVEN, ENumber.EIGHT -> cellSize * 4 / 9
+        ENumber.NINE, ENumber.TEN, ENumber.ELEVEN, ENumber.TWELVE -> cellSize * 2 / 5
+        ENumber.THIRTEEN, ENumber.FOURTEEN, ENumber.FIFTEEN -> cellSize * 7 / 20
+        ENumber.SIXTEEN -> cellSize * 3 / 10
         else -> 0.0
     }
-
-    fun Container.block(number: Number) = Block(number).addTo(this)
 }
