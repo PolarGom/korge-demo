@@ -3,6 +3,7 @@ import com.soywiz.korge.tween.*
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
+import com.soywiz.korim.font.BitmapFont
 import com.soywiz.korim.font.readBitmapFont
 import com.soywiz.korim.format.*
 import com.soywiz.korim.text.TextAlignment
@@ -10,13 +11,21 @@ import com.soywiz.korio.file.std.*
 import com.soywiz.korma.geom.Rectangle
 import com.soywiz.korma.geom.vector.rect
 import com.soywiz.korma.geom.vector.roundRect
+import kotlin.properties.Delegates
+
+var cellSize: Double = 0.0
+var fieldSize: Double = 0.0
+var leftIndent: Double = 0.0
+var topIndent: Double = 0.0
+var font: BitmapFont by Delegates.notNull()
 
 suspend fun main() = Korge(width = 480, height = 640, title = "2048", bgcolor = RGBA(253, 247, 240)) {
 
-	val cellSize = views.virtualWidth / 5.0
-	val fieldSize = 50 + 4 * cellSize
-	val leftIndent = (views.virtualWidth - fieldSize) / 2
-	val topIndent = 150.0
+	font = resourcesVfs["clear_sans.fnt"].readBitmapFont()
+	cellSize = views.virtualWidth / 5.0
+	fieldSize = 50 + 4 * cellSize
+	leftIndent = (views.virtualWidth - fieldSize) / 2
+	topIndent = 150.0
 	val bgField = RoundRect(fieldSize, fieldSize, 5.0, fill = Colors["#b9aea0"])
 	bgField.x = leftIndent
 	bgField.y = topIndent
